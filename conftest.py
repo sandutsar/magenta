@@ -12,10 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-r"""Separate file for storing the current version of Magenta.
+"""Parse flags when using pytest, which imports tests instead of running."""
 
-Stored in a separate file so that setup.py can reference the version without
-pulling in all the dependencies in __init__.py.
-"""
+import sys
 
-__version__ = '2.1.4'
+from absl import flags
+import pytest
+
+
+@pytest.fixture(scope='session', autouse=True)
+def parse_flags():
+  # Only pass the first item, because pytest flags shouldn't be parsed as absl
+  # flags.
+  flags.FLAGS(sys.argv[:1])
